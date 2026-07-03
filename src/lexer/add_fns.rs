@@ -4,8 +4,6 @@ use super::lexer::Lexer;
 impl Lexer {
     fn add_simple_token(&mut self, token: Tokens) {
         self.tokens.push(token);
-
-        self.i += 1;
     }
 
     pub fn add_let(&mut self) {
@@ -121,9 +119,7 @@ impl Lexer {
     }
 
     pub fn add_identifier(&mut self, value: String) {
-        self.tokens.push(Tokens::Identifier(value));
-        
-        self.i += 1;
+        self.tokens.push(Tokens::Identifier(value));        
     }
 
     pub fn add_type_string(&mut self, value: String) {
@@ -141,8 +137,6 @@ impl Lexer {
                     )
                 );
 
-                self.i += 1;
-
                 Ok(())
             }
 
@@ -158,8 +152,6 @@ impl Lexer {
                         float
                     )
                 );
-
-                self.i += 1;
 
                 Ok(())
             }
@@ -177,8 +169,6 @@ impl Lexer {
                     )
                 );
 
-                self.i += 1;
-
                 Ok(())
             }
 
@@ -188,6 +178,5 @@ impl Lexer {
 
     pub fn add_unknown(&mut self, value: String) {
         self.tokens.push(Tokens::Unknown(value));
-        self.i += 1;
     }
 }
