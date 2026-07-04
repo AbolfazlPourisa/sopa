@@ -7,10 +7,10 @@ impl Lexer {
     }
 
     pub fn add_identifier(&mut self, value: String) {
-        self.tokens.push(Tokens::Identifier(value));        
+        self.add_single(Tokens::Identifier(value));        
     }
 
-    pub fn add_type<T>(&mut self, value: String) -> Result<(), String> 
+    pub fn add_literal<T>(&mut self, value: String) -> Result<(), String> 
     where 
         T: std::str::FromStr + Into<Tokens>,
         <T as std::str::FromStr>::Err: std::fmt::Display
@@ -29,6 +29,6 @@ impl Lexer {
     }
 
     pub fn add_unknown(&mut self, value: String) {
-        self.tokens.push(Tokens::Unknown(value));
+        self.add_single(Tokens::Unknown(value));
     }
 }

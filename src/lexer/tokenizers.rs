@@ -65,7 +65,7 @@ impl Lexer {
 
         self.i += 1;
 
-        self.add_type::<String>(string).expect("Invalid string");
+        self.add_literal::<String>(string).expect("Invalid string");
     }
 
     pub fn tokenizer_number(&mut self) {
@@ -113,7 +113,7 @@ impl Lexer {
         }
 
         if is_float {
-            match self.add_type::<f64>(number) {
+            match self.add_literal::<f64>(number) {
                 Ok(_) => {
                     return;
                 },
@@ -124,7 +124,7 @@ impl Lexer {
             }
         }
 
-        match self.add_type::<i64>(number) {
+        match self.add_literal::<i64>(number) {
             Ok(_) => {
                 return;
             },
