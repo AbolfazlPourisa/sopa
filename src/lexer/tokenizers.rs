@@ -71,10 +71,25 @@ impl Lexer {
 
     pub fn tokenizer_number(&mut self) {
         let mut number = String::new();
-        let mut is_float = false; 
+        let mut is_float = false;
+        let mut is_negative = false;
 
         while self.i < self.chars.len() {
             let ch = self.chars[self.i];
+
+            if ch == '-' {
+                if is_negative || number.len() > 0 {
+                    panic!("Invalid number");
+                }
+
+                is_negative = true;
+
+                number.push('-');
+
+                self.i += 1;
+
+                continue;
+            }
 
             if ch.is_digit(10) {
                 number.push(ch);
