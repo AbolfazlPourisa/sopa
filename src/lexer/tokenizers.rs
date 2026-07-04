@@ -1,3 +1,5 @@
+use crate::lexer::Tokens::TypeString;
+
 use super::token::Tokens;
 use super::lexer::Lexer;
 
@@ -38,6 +40,34 @@ impl Lexer {
         }
     }
 
+    pub fn tokenizer_string(&mut self) {
+        let mut string = String::new();
+        
+        let mut qoute_count = 1;
+
+        self.i += 1;
+
+        while self.i < self.chars.len() && self.chars[self.i] != '"' {
+            string.push(self.chars[self.i]);
+
+            self.i += 1;
+        }
+
+        if let Some(ch) = self.chars.get(self.i) {
+            if *ch == '"' {
+                qoute_count += 1;
+            }
+        }
+
+        if qoute_count != 2 {
+            panic!("Invalid string");
+        }
+
+        self.i += 1;
+
+        self.add_type::<String>(string).expect("Invalid string");
+    }
+
     pub fn tokenizer_number(&mut self) {
         let mut number = String::new();
         let mut is_float = false; 
@@ -54,16 +84,16 @@ impl Lexer {
             }
 
             if ch == '.' {
-                let has_next = self.i + 1 < self.chars.len();
                 let mut next_is_digit = false;
-                if has_next {
-                    next_is_digit = self.chars[self.i + 1].is_digit(10);
+                if let Some(ch) = self.chars.get(self.i + 1) {
+                    next_is_digit = ch.is_digit(10);
                 }
 
-                let has_prev = self.i > 0;
                 let mut prev_is_digit = false;
-                if has_prev {
-                    prev_is_digit = self.chars[self.i - 1].is_digit(10);
+                if self.i > 0 {
+                    if let Some(ch) = self.chars.get(self.i - 1) {
+                        prev_is_digit = ch.is_digit(10);
+                    }
                 }
 
                 if !is_float && (prev_is_digit && next_is_digit) {
@@ -95,13 +125,13 @@ impl Lexer {
         }
 
         match self.add_type::<i64>(number) {
-                Ok(_) => {
-                    return;
-                },
+            Ok(_) => {
+                return;
+            },
 
-                Err(err) => {
-                    panic!("{}", err);
-                }
+            Err(err) => {
+                panic!("{}", err);
+            }
         }
     }
 }

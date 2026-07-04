@@ -20,9 +20,10 @@ impl Lexer {
 
                 '0'..='9' => self.tokenizer_number(),
 
+                '"' => self.tokenizer_string(),
+
                 _ => {
                     self.i += 1;
-                    // continue;
                 }
             }
         }
