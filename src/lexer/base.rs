@@ -13,10 +13,18 @@ impl Lexer {
 
     pub fn lex(&mut self) {
         while self.i < self.chars.len() {
-            // match chars[self.i] {
-                // ' ' | '\t' | '\n' => self.i += 1,
-            // }
-            self.add_let();
+            match self.chars[self.i] {
+                ' ' | '\t' | '\n' => self.i += 1,
+
+                'a'..='z' | 'A'..='Z' => self.tokenizer_char(),
+
+                '0'..='9' => self.tokenizer_number(),
+
+                _ => {
+                    self.i += 1;
+                    // continue;
+                }
+            }
         }
     }
 }
