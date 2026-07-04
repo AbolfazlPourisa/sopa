@@ -1,11 +1,10 @@
 use super::token::Tokens;
 use super::token::Operator;
-use super::token::Literal;
 use super::token::Keyword;
 use super::lexer::Lexer;
 use super::error::LexerError;
 
-impl Lexer {
+impl<'a> Lexer<'a> {
     pub fn tokenizer_char(&mut self) {
         let mut ident = String::new();
 
@@ -62,7 +61,13 @@ impl Lexer {
         }
 
         if qoute_count != 2 {
-            return Err(LexerError::InvalidString());
+            return Err(
+                LexerError::InvalidString{
+                    line_number: self.line,
+                    line: self.get_current_line(),
+                    error: "" .to_string()                   
+                }
+            );
         }
 
         self.i += 1;
@@ -82,7 +87,13 @@ impl Lexer {
 
             if ch == '-' {
                 if is_negative || number.len() > 0 {
-                    return Err(LexerError::InvalidNumber());
+                    return Err(
+                        LexerError::InvalidNumber{
+                            line_number: self.line,
+                            line: self.get_current_line(),
+                            error: "".to_string()                   
+                        }
+                    );
                 }
 
                 is_negative = true;
@@ -124,7 +135,13 @@ impl Lexer {
 
                     continue;
                 } else {
-                    return Err(LexerError::InvalidFloat());
+                    return Err(
+                        LexerError::InvalidFloat{
+                            line_number: self.line,
+                            line: self.get_current_line(),
+                            error: "".to_string()
+                        }
+                    );
                 }
             }
 

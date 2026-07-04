@@ -13,7 +13,7 @@ pub enum Tokens {
 pub enum Literal {
     Int(i64),
     Float(f64),
-    String(String),
+    LiteralString(String),
     Boolean(bool)
 }
 
@@ -75,6 +75,6 @@ impl Into<Tokens> for bool {
 
 impl Into<Tokens> for String {
     fn into(self) -> Tokens {
-        Tokens::Literal(Literal::String(self))
+        Tokens::Literal(Literal::LiteralString(self))
     }
 }

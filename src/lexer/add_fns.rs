@@ -2,7 +2,7 @@ use super::token::Tokens;
 use super::lexer::Lexer;
 use super::error::LexerError;
 
-impl Lexer {
+impl<'a> Lexer<'a> {
     pub fn add_single(&mut self, token: Tokens) {
         self.tokens.push(token);
     }
@@ -27,7 +27,9 @@ impl Lexer {
 
             Err(_) => Err(
                 LexerError::InvalidType {
-                    value: value
+                    line_number: self.line,
+                    line: self.get_current_line(),
+                    error: "" .to_string()
                 }
             )
         }

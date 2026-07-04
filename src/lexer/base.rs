@@ -2,20 +2,27 @@ use super::token::Tokens;
 use super::lexer::Lexer;
 use super::error::LexerError;
 
-impl Lexer {
-    pub fn new(code: String) -> Self {
+impl<'a> Lexer<'a> {
+    pub fn new(code: &'a str) -> Self {
         Self {
             tokens: Vec::new(),
             chars: code.chars().collect(),
+            lines: code.lines().collect(),
             code: code,
             i: 0,
+            line: 1,
         }
     }
 
     pub fn lex(&mut self) -> Result<(), LexerError> {
         while self.i < self.chars.len() {
             match self.chars[self.i] {
-                ' ' | '\t' | '\n' => self.i += 1,
+                ' ' | '\t' => self.i += 1,
+
+                '\n' => {
+                    self.line += 1;
+                    self.i += 1;
+                }
 
                 'a'..='z' | 'A'..='Z' => self.tokenizer_char(),
 
