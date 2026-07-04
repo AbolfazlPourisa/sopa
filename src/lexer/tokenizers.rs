@@ -1,6 +1,7 @@
-use crate::lexer::Tokens::TypeString;
-
 use super::token::Tokens;
+use super::token::Operator;
+use super::token::Literal;
+use super::token::Keyword;
 use super::lexer::Lexer;
 
 impl Lexer {
@@ -15,19 +16,19 @@ impl Lexer {
 
         match ident.as_str() {
             "let" => {
-                self.add_single(Tokens::Let);
+                self.add_single(Tokens::Keyword(Keyword::Let));
 
                 return;
             },
 
             "and" => {
-                self.add_single(Tokens::And);
+                self.add_single(Tokens::Operator(Operator::And));
                 
                 return;
             },
 
             "or" => {
-                self.add_single(Tokens::Or);
+                self.add_single(Tokens::Operator(Operator::Or));
             
                 return;
             }
