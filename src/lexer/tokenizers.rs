@@ -13,19 +13,19 @@ impl Lexer {
 
         match ident.as_str() {
             "let" => {
-                self.add_let();
+                self.add_single(Tokens::Let);
 
                 return;
             },
 
             "and" => {
-                self.add_and();
+                self.add_single(Tokens::And);
                 
                 return;
             },
 
             "or" => {
-                self.add_or();
+                self.add_single(Tokens::Or);
             
                 return;
             }
@@ -83,7 +83,7 @@ impl Lexer {
         }
 
         if is_float {
-            match self.add_type_float(number) {
+            match self.add_type::<f64>(number) {
                 Ok(_) => {
                     return;
                 },
@@ -94,7 +94,7 @@ impl Lexer {
             }
         }
 
-        match self.add_type_int(number) {
+        match self.add_type::<i64>(number) {
                 Ok(_) => {
                     return;
                 },

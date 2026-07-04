@@ -25,3 +25,27 @@ pub enum Tokens {
 
     Unknown(String)
 }
+
+impl Into<Tokens> for i64 {
+    fn into(self) -> Tokens {
+        Tokens::TypeInt(self)
+    }
+}
+
+impl Into<Tokens> for f64 {
+    fn into(self) -> Tokens {
+        Tokens::TypeFloat(self)
+    }
+}
+
+impl Into<Tokens> for bool {
+    fn into(self) -> Tokens {
+        Tokens::TypeBoolean(self)
+    }
+}
+
+impl Into<Tokens> for String {
+    fn into(self) -> Tokens {
+        Tokens::TypeString(self)
+    }
+}
