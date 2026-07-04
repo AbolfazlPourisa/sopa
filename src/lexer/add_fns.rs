@@ -1,5 +1,6 @@
 use super::token::Tokens;
 use super::lexer::Lexer;
+use super::error::LexerError;
 
 impl Lexer {
     pub fn add_single(&mut self, token: Tokens) {
@@ -10,7 +11,7 @@ impl Lexer {
         self.add_single(Tokens::Identifier(value));        
     }
 
-    pub fn add_literal<T>(&mut self, value: String) -> Result<(), String> 
+    pub fn add_literal<T>(&mut self, value: String) -> Result<(), LexerError> 
     where 
         T: std::str::FromStr + Into<Tokens>,
         <T as std::str::FromStr>::Err: std::fmt::Display
@@ -24,7 +25,11 @@ impl Lexer {
                 Ok(())
             }
 
-            Err(_) => Err(format!("Invalid type: {}", value))
+            Err(_) => Err(
+                LexerError::InvalidType {
+                    value: value
+                }
+            )
         }
     }
 

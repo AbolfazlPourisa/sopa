@@ -1,5 +1,6 @@
 use super::token::Tokens;
 use super::lexer::Lexer;
+use super::error::LexerError;
 
 impl Lexer {
     pub fn new(code: String) -> Self {
@@ -11,21 +12,23 @@ impl Lexer {
         }
     }
 
-    pub fn lex(&mut self) {
+    pub fn lex(&mut self) -> Result<(), LexerError> {
         while self.i < self.chars.len() {
             match self.chars[self.i] {
                 ' ' | '\t' | '\n' => self.i += 1,
 
                 'a'..='z' | 'A'..='Z' => self.tokenizer_char(),
 
-                '0'..='9' | '-' => self.tokenizer_number(),
+                '0'..='9' | '-' => self.tokenizer_number()?,
 
-                '"' => self.tokenizer_string(),
+                '"' => self.tokenizer_string()?,
 
                 _ => {
                     self.i += 1;
                 }
             }
         }
+
+        Ok(())
     }
 }

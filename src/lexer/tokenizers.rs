@@ -3,6 +3,7 @@ use super::token::Operator;
 use super::token::Literal;
 use super::token::Keyword;
 use super::lexer::Lexer;
+use super::error::LexerError;
 
 impl Lexer {
     pub fn tokenizer_char(&mut self) {
@@ -41,7 +42,7 @@ impl Lexer {
         }
     }
 
-    pub fn tokenizer_string(&mut self) {
+    pub fn tokenizer_string(&mut self) -> Result<(), LexerError> {
         let mut string = String::new();
         
         let mut qoute_count = 1;
@@ -61,15 +62,17 @@ impl Lexer {
         }
 
         if qoute_count != 2 {
-            panic!("Invalid string");
+            return Err(LexerError::InvalidString());
         }
 
         self.i += 1;
 
-        self.add_literal::<String>(string).expect("Invalid string");
+        self.add_literal::<String>(string)?;
+
+        Ok(())
     }
 
-    pub fn tokenizer_number(&mut self) {
+    pub fn tokenizer_number(&mut self) -> Result<(), LexerError> {
         let mut number = String::new();
         let mut is_float = false;
         let mut is_negative = false;
@@ -79,7 +82,7 @@ impl Lexer {
 
             if ch == '-' {
                 if is_negative || number.len() > 0 {
-                    panic!("Invalid number");
+                    return Err(LexerError::InvalidNumber());
                 }
 
                 is_negative = true;
@@ -121,7 +124,7 @@ impl Lexer {
 
                     continue;
                 } else {
-                    panic!("Invalid float");
+                    return Err(LexerError::InvalidFloat());
                 }
             }
 
@@ -129,25 +132,13 @@ impl Lexer {
         }
 
         if is_float {
-            match self.add_literal::<f64>(number) {
-                Ok(_) => {
-                    return;
-                },
+            self.add_literal::<f64>(number)?;
 
-                Err(err) => {
-                    panic!("{}", err);
-                }
-            }
+            return Ok(());
         }
 
-        match self.add_literal::<i64>(number) {
-            Ok(_) => {
-                return;
-            },
+        self.add_literal::<i64>(number)?;
 
-            Err(err) => {
-                panic!("{}", err);
-            }
-        }
+        Ok(())
     }
 }
