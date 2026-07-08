@@ -14,26 +14,5 @@ pub enum LexerError {
         line_number: usize,
         line: String,
         error: String,
-    },
-
-    #[error("Invalid number '{error}' at line {line_number}:\n {line}\n expected a valid number")]
-    InvalidNumber {
-        line_number: usize,
-        line: String,
-        error: String,
-    },
-
-    #[error("Invalid integer '{error}' at line {line_number}:\n  {line}\n expected an integer (digits only)")]
-    InvalidInt {
-        line_number: usize,
-        line: String,
-        error: String,
-    },
-
-    #[error("Invalid float '{error}' at line {line_number}:\n  {line}\n expected a float (e.g., '123.45')")]
-    InvalidFloat {
-        line_number: usize,
-        line: String,
-        error: String,
-    },
+    }
 }

@@ -53,6 +53,7 @@ pub enum Delimiter {
     LBracket, 
     RBracket, 
     Comma,
+    Dash,
 }
 
 impl Into<Tokens> for i64 {

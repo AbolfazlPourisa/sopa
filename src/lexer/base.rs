@@ -26,9 +26,11 @@ impl<'a> Lexer<'a> {
 
                 'a'..='z' | 'A'..='Z' => self.tokenizer_char(),
 
-                '0'..='9' | '-' => self.tokenizer_number()?,
+                '0'..='9' => self.tokenizer_number()?,
 
                 '"' => self.tokenizer_string()?,
+
+                '.' | '(' | ')' | '{' | '}' | '[' | ']' | ',' | '-' => self.tokenizer_delimiter(),
 
                 _ => {
                     self.i += 1;

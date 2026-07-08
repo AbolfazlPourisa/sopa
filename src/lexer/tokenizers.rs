@@ -1,6 +1,7 @@
 use super::token::Tokens;
 use super::token::Operator;
 use super::token::Keyword;
+use super::token::Delimiter;
 use super::lexer::Lexer;
 use super::error::LexerError;
 
@@ -8,7 +9,7 @@ impl<'a> Lexer<'a> {
     pub fn tokenizer_char(&mut self) {
         let mut ident = String::new();
 
-        while self.i < self.chars.len() && (self.chars[self.i].is_alphabetic() || self.chars[self.i] == '_') {
+        while self.i < self.chars.len() && (self.chars[self.i].is_alphabetic() || self.chars[self.i] == '_' || self.chars[self.i].is_digit(10)) {
             ident.push(self.chars[self.i]);
 
             self.i += 1;
@@ -80,82 +81,86 @@ impl<'a> Lexer<'a> {
     pub fn tokenizer_number(&mut self) -> Result<(), LexerError> {
         let mut number = String::new();
         let mut is_float = false;
-        let mut is_negative = false;
 
         while self.i < self.chars.len() {
             let ch = self.chars[self.i];
 
-            if ch == '-' {
-                if is_negative || number.len() > 0 {
-                    return Err(
-                        LexerError::InvalidNumber{
-                            line_number: self.line,
-                            line: self.get_current_line(),
-                            error: "".to_string()                   
-                        }
-                    );
-                }
-
-                is_negative = true;
-
-                number.push('-');
-
-                self.i += 1;
-
-                continue;
-            }
-
             if ch.is_digit(10) {
                 number.push(ch);
-
+                self.i += 1;
+            } else if ch == '.' && !is_float {
+                is_float = true;
+                number.push(ch);
+    
                 self.i += 1;
 
-                continue;
+            } else {
+                break;
             }
+        }
+        
+        if number.ends_with('.') {
+            is_float = false;
+            number.pop();
 
-            if ch == '.' {
-                let mut next_is_digit = false;
-                if let Some(ch) = self.chars.get(self.i + 1) {
-                    next_is_digit = ch.is_digit(10);
-                }
-
-                let mut prev_is_digit = false;
-                if self.i > 0 {
-                    if let Some(ch) = self.chars.get(self.i - 1) {
-                        prev_is_digit = ch.is_digit(10);
-                    }
-                }
-
-                if !is_float && (prev_is_digit && next_is_digit) {
-                    is_float = true;
-                    
-                    number.push(ch);
-
-                    self.i += 1;
-
-                    continue;
-                } else {
-                    return Err(
-                        LexerError::InvalidFloat{
-                            line_number: self.line,
-                            line: self.get_current_line(),
-                            error: "".to_string()
-                        }
-                    );
-                }
-            }
-
-            break;
+            self.i -= 1;
         }
 
         if is_float {
             self.add_literal::<f64>(number)?;
 
-            return Ok(());
+        } else {
+            self.add_literal::<i64>(number)?;
         }
 
-        self.add_literal::<i64>(number)?;
-
         Ok(())
+    }
+
+
+    pub fn tokenizer_delimiter(&mut self) {
+        match self.chars[self.i] {
+            '.' => {
+                self.add_single(Tokens::Delimiter(Delimiter::Dot));
+            }
+
+            '(' => {
+                self.add_single(Tokens::Delimiter(Delimiter::LParen));
+            }
+
+            ')' => {
+                self.add_single(Tokens::Delimiter(Delimiter::RParen));
+            }
+
+            '{' => {
+                self.add_single(Tokens::Delimiter(Delimiter::LBrace));
+            }
+
+            '}' => {
+                self.add_single(Tokens::Delimiter(Delimiter::RBrace));
+            }
+
+            '[' => {
+                self.add_single(Tokens::Delimiter(Delimiter::RBracket));
+            }
+
+            ']' => {
+                self.add_single(Tokens::Delimiter(Delimiter::LBracket));
+            }
+            
+            ',' => {
+                self.add_single(Tokens::Delimiter(Delimiter::Comma));
+            }
+
+            '-' => {
+                self.add_single(Tokens::Delimiter(Delimiter::Dash));
+            }
+
+            _ => {
+                println!("من توی حفلم");
+                // panic!("مردم داداش");
+            }
+        }
+
+        self.i += 1;
     }
 }
