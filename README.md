@@ -7,7 +7,6 @@ A lightweight, fast scripting language written in **Rust**.
 * 🚀 Fast and lightweight
 * 📖 Simple and easy-to-learn syntax
 * 🦀 Written in Rust
-* 🧠 No garbage collector (GC)
 
 ## 🚀 Getting Started
 
